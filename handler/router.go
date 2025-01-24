@@ -22,5 +22,8 @@ func New(hdlConf *HandlerConfig) *Handler {
 
 func (h *Handler) Router() (chi.Router, error) {
 	router := chi.NewRouter()
+
+	h.applcUx.CreateApplicant()
+
 	return router, nil
 }

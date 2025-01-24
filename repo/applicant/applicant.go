@@ -2,6 +2,7 @@ package applicant
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/lftzzzzfeng/fasms/db"
 	"github.com/lftzzzzfeng/fasms/domain"
@@ -36,6 +37,7 @@ func (r *ApplicantRepo) Create(ctx context.Context, data *domain.Applicant) erro
 
 	_, err := r.db.NamedExecContext(ctx, sql, data)
 	if err != nil {
+		fmt.Println("err", err)
 		return errors.Wrap(err, "applicant repository Create: insert failed")
 	}
 
