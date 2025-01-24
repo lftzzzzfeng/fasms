@@ -12,11 +12,13 @@ import (
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 
-	"github.com/lftzzzzfengfasms/config"
-	"github.com/lftzzzzfengfasms/db"
-	pgdb "github.com/lftzzzzfengfasms/db/pg"
-	"github.com/lftzzzzfengfasms/router"
-	httpserver "github.com/lftzzzzfengfasms/server"
+	"github.com/lftzzzzfeng/fasms/config"
+	"github.com/lftzzzzfeng/fasms/db"
+	pgdb "github.com/lftzzzzfeng/fasms/db/pg"
+	"github.com/lftzzzzfeng/fasms/handler"
+	applcrepo "github.com/lftzzzzfeng/fasms/repo/applicant"
+	httpserver "github.com/lftzzzzfeng/fasms/server"
+	applcux "github.com/lftzzzzfeng/fasms/usecases/applicant"
 )
 
 const (
@@ -55,9 +57,17 @@ func main() {
 
 	app.defaultPGDB = must(pgdb.NewPG(app.config.Database))
 
-	must(pgdb.NewExec(app.defaultPGDB, app.logger))
+	app.execer = must(pgdb.NewExec(app.defaultPGDB, app.logger))
 
-	router := must(router.New())
+	// applicant
+	applcRepo := applcrepo.New(app.execer)
+	applcUx := applcux.New(applcRepo)
+
+	handlerConf := &handler.HandlerConfig{
+		ApplcUx: applcUx,
+	}
+	hdler := handler.New(handlerConf)
+	router := must(hdler.Router())
 
 	app.httpServer = must(httpserver.New(&httpserver.ServerParams{
 		Config:  app.config.Server,

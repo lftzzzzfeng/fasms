@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/lftzzzzfengfasms/db/pg"
-	httpserver "github.com/lftzzzzfengfasms/server"
+	"github.com/lftzzzzfeng/fasms/db/pg"
+	httpserver "github.com/lftzzzzfeng/fasms/server"
 )
 
 // Config is the main application configurations.

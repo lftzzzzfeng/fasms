@@ -13,7 +13,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 
-	"github.com/lftzzzzfengfasms/db"
+	"github.com/lftzzzzfeng/fasms/db"
 )
 
 var _ db.Execer = &Exec{}

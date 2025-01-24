@@ -1,4 +1,4 @@
-module github.com/lftzzzzfengfasms
+module github.com/lftzzzzfeng/fasms
 
 go 1.23.5
 
