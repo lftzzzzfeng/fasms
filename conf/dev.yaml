@@ -1,0 +1,14 @@
+database:
+  host: localhost
+  user: dtone
+  password:
+  port: 5432
+  dbname: fm
+  ssl_mode: disable
+  maxOpenConnection: 5
+  maxIdleConnection: 2
+
+server:
+  port: 8080
+  idleTimeout: 20s
+  readHeaderTimeout: 2s
