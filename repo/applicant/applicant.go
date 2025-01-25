@@ -38,7 +38,7 @@ func (r *ApplicantRepo) Create(ctx context.Context, data *domain.Applicant) erro
 
 	_, err := r.db.NamedExecContext(ctx, sql, data)
 	if err != nil {
-		return errors.Wrap(err, "applicant repository Create: insert failed")
+		return errors.Wrap(err, "applicant repository create: insert failed")
 	}
 
 	return nil

@@ -12,6 +12,7 @@ type Household struct {
 
 type Applicant struct {
 	Name             string `json:"name"`
+	IC               string `json:"ic"`
 	Sex              string `json:"sex"`
 	EmploymentStatus string `json:"employment_status"`
 	DOB              string `json:"dob"`
