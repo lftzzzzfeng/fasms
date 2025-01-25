@@ -2,7 +2,7 @@ package applicant
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	"github.com/lftzzzzfeng/fasms/db"
 	"github.com/lftzzzzfeng/fasms/domain"
@@ -33,11 +33,10 @@ func (r *ApplicantRepo) Create(ctx context.Context, data *domain.Applicant) erro
 			(id, name, sex, ic, family_id, relationship, employment_status)
 		VALUES
 			(:id, :name, :sex, :ic, :family_id, :relationship, :employment_status)
-		`
+	`
 
 	_, err := r.db.NamedExecContext(ctx, sql, data)
 	if err != nil {
-		fmt.Println("err", err)
 		return errors.Wrap(err, "applicant repository Create: insert failed")
 	}
 
@@ -46,5 +45,38 @@ func (r *ApplicantRepo) Create(ctx context.Context, data *domain.Applicant) erro
 
 // GetAll return all applicants
 func (r *ApplicantRepo) GetAll(ctx context.Context) ([]*domain.Applicant, error) {
-	return nil, nil
+
+	query := `
+		SELECT id, 
+			name,
+			sex,
+			ic,
+			f.address,
+			relationship,
+			employment_status
+		FROM fasms.applicants t
+		LEFT JOIN fasms.families f ON f.id = t.family_id
+	`
+
+	rows, err := r.db.QueryxContext(ctx, query)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errors.Wrap(err, "applicantrepo: applicant not found from db.")
+		}
+
+		return nil, errors.Wrap(err, "applicantrepo: get applicant from db failed.")
+	}
+
+	var applicants []*domain.Applicant
+	for rows.Next() {
+		var applicant *domain.Applicant
+
+		if err = rows.StructScan(applicant); err != nil {
+			return nil, errors.Wrap(err, "applicantrepo: scan applicant data failed")
+		}
+
+		applicants = append(applicants, applicant)
+	}
+
+	return applicants, nil
 }
