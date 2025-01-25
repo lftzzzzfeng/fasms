@@ -9,20 +9,24 @@ import (
 )
 
 func (r *Router) createApplicantHandler(res http.ResponseWriter, req *http.Request) {
-	// ctx := req.Context()
+	ctx := req.Context()
 
 	applicant := &request.CreateApplicant{}
-
 	if err := r.readJSON(req.Body, applicant); err != nil {
 		r.Render(http.StatusBadRequest, res, nil)
 		return
 	}
 
-	// check existing applicant, family
+	_, err := r.applcUx.CreateApplicant(ctx, applicant)
+	if err != nil {
+		r.logger.Error("error create applicant", zap.Error(err))
 
-	// create familly
+		r.Render(http.StatusOK, res, &response.Error{
+			Msg: "error create applicants",
+		})
 
-	// create applicant
+		return
+	}
 
 	r.Render(http.StatusOK, res, applicant)
 }

@@ -12,6 +12,7 @@ import (
 type Applicant interface {
 	Create(ctx context.Context, applicant *domain.Applicant) error
 	GetAll(ctx context.Context) ([]*domain.Applicant, error)
+	GetByIC(ctx context.Context, ic string) (*domain.Applicant, error)
 }
 
 type ApplicantRepo struct {
@@ -79,4 +80,30 @@ func (r *ApplicantRepo) GetAll(ctx context.Context) ([]*domain.Applicant, error)
 	}
 
 	return applicants, nil
+}
+
+func (r *ApplicantRepo) GetByIC(ctx context.Context, ic string) (*domain.Applicant, error) {
+	query := `
+		SELECT id,
+			name,
+			sex,
+			ic,
+			relationship,
+			employment_status
+		FROM fasms.applicants
+		WHERE ic = :ic
+		LIMIT 1
+	`
+
+	var applicant *domain.Applicant
+	err := r.db.QueryRowxContext(ctx, query, ic).Scan(applicant)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errors.Wrapf(err, "applicantrepo: applicant not found")
+		}
+
+		return nil, errors.Wrapf(err, "applicantrepo: get applicant failed")
+	}
+
+	return applicant, nil
 }
