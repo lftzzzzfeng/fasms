@@ -11,7 +11,7 @@ import (
 
 type Applicant interface {
 	Create(ctx context.Context, applicant *domain.Applicant) error
-	GetAll(ctx context.Context) ([]*domain.Applicant, error)
+	GetAll(ctx context.Context, offset, limit int) ([]*domain.ApplicantFamily, error)
 	GetByIC(ctx context.Context, ic string) (*domain.Applicant, error)
 }
 
@@ -45,7 +45,7 @@ func (r *ApplicantRepo) Create(ctx context.Context, data *domain.Applicant) erro
 }
 
 // GetAll return all applicants
-func (r *ApplicantRepo) GetAll(ctx context.Context) ([]*domain.Applicant, error) {
+func (r *ApplicantRepo) GetAll(ctx context.Context, offset, limit int) ([]*domain.ApplicantFamily, error) {
 
 	query := `
 		SELECT t.id,
@@ -56,10 +56,12 @@ func (r *ApplicantRepo) GetAll(ctx context.Context) ([]*domain.Applicant, error)
 			relationship,
 			employment_status
 		FROM fasms.applicants t
-		LEFT JOIN fasms.families f ON f.id = t.family_id
+		JOIN fasms.families f ON f.id = t.family_id
+		OFFSET $1
+		LIMIT $2
 	`
 
-	rows, err := r.db.QueryxContext(ctx, query)
+	rows, err := r.db.QueryxContext(ctx, query, offset, limit)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, errors.Wrap(err, "applicantrepo: applicant not found from db.")
@@ -68,15 +70,15 @@ func (r *ApplicantRepo) GetAll(ctx context.Context) ([]*domain.Applicant, error)
 		return nil, errors.Wrap(err, "applicantrepo: get applicant from db failed.")
 	}
 
-	var applicants []*domain.Applicant
+	var applicants []*domain.ApplicantFamily
 	for rows.Next() {
-		var applicant *domain.Applicant
+		var applicant domain.ApplicantFamily
 
-		if err = rows.StructScan(applicant); err != nil {
+		if err = rows.StructScan(&applicant); err != nil {
 			return nil, errors.Wrap(err, "applicantrepo: scan applicant data failed")
 		}
 
-		applicants = append(applicants, applicant)
+		applicants = append(applicants, &applicant)
 	}
 
 	return applicants, nil

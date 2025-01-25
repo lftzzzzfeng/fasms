@@ -34,7 +34,7 @@ func (r *Router) createApplicantHandler(res http.ResponseWriter, req *http.Reque
 func (r *Router) getAllApplicantHandler(res http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
-	applicants, err := r.applcUx.GetAllApplicants(ctx)
+	applicants, err := r.applcUx.GetAllApplicants(ctx, 0*PageSize, 50)
 	if err != nil {
 		r.logger.Error("error get all applicants", zap.Error(err))
 

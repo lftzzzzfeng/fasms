@@ -8,6 +8,7 @@ import (
 
 	"github.com/lftzzzzfeng/fasms/domain"
 	"github.com/lftzzzzfeng/fasms/handler/request"
+	"github.com/lftzzzzfeng/fasms/handler/response"
 	applcrepo "github.com/lftzzzzfeng/fasms/repo/applicant"
 	familyrepo "github.com/lftzzzzfeng/fasms/repo/family"
 )
@@ -60,25 +61,29 @@ func (a *Applicant) CreateApplicant(ctx context.Context, req *request.CreateAppl
 		}
 
 		newApplicant := &domain.Applicant{
-			ID:               applicantID,
-			Name:             req.Name,
-			Sex:              req.Sex,
-			IC:               req.IC,
-			FamilyID:         familyID,
-			EmploymentStatus: req.EmploymentStatus,
+			ApplicantCommon: &domain.ApplicantCommon{
+				ID:               applicantID,
+				Name:             req.Name,
+				Sex:              req.Sex,
+				IC:               req.IC,
+				EmploymentStatus: req.EmploymentStatus,
+			},
+			FamilyID: familyID,
 		}
 
 		if i > 0 {
 			reqApplc := req.Household[i-1]
 
 			newApplicant = &domain.Applicant{
-				ID:               applicantID,
-				Name:             reqApplc.Name,
-				Sex:              reqApplc.Sex,
-				IC:               reqApplc.IC,
-				FamilyID:         familyID,
-				Relationship:     reqApplc.Relation,
-				EmploymentStatus: reqApplc.EmploymentStatus,
+				ApplicantCommon: &domain.ApplicantCommon{
+					ID:               applicantID,
+					Name:             reqApplc.Name,
+					Sex:              reqApplc.Sex,
+					IC:               reqApplc.IC,
+					Relationship:     reqApplc.Relation,
+					EmploymentStatus: reqApplc.EmploymentStatus,
+				},
+				FamilyID: familyID,
 			}
 		}
 
@@ -90,13 +95,36 @@ func (a *Applicant) CreateApplicant(ctx context.Context, req *request.CreateAppl
 	return nil
 }
 
-func (a *Applicant) GetAllApplicants(ctx context.Context) ([]*domain.Applicant, error) {
-	applicants, err := a.ApplicantRepo.GetAll(ctx)
+func (a *Applicant) GetAllApplicants(ctx context.Context, offset, limit int) (*response.GetAllApplicants, error) {
+	applicants, err := a.ApplicantRepo.GetAll(ctx, offset, limit)
 	if err != nil {
 		return nil, errors.Wrap(err, "applicationusecases: get all applicants failed.")
 	}
 
-	return applicants, nil
+	applicantsRes := &response.GetAllApplicants{}
+	if len(applicants) > 0 {
+		for _, applc := range applicants {
+			if applc.Relationship == "" {
+				applicantsRes.ID = applc.ID
+				applicantsRes.Name = applc.Name
+				applicantsRes.Sex = applc.Sex
+				applicantsRes.IC = applc.IC
+				applicantsRes.EmploymentStatus = applc.EmploymentStatus
+			} else {
+				var household response.Household
+				household.ID = applc.ID
+				household.Name = applc.Name
+				household.Sex = applc.Sex
+				household.IC = applc.IC
+				household.EmploymentStatus = applc.EmploymentStatus
+				household.Relation = applc.Relationship
+
+				applicantsRes.Household = append(applicantsRes.Household, household)
+			}
+		}
+	}
+
+	return applicantsRes, nil
 }
 
 func (a *Applicant) GetApplicantByIC(ctx context.Context, ic string) (*domain.Applicant, error) {
