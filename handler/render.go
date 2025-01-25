@@ -10,7 +10,7 @@ import (
 
 const ContentTypeJSON = "application/json; charset=utf-8"
 
-func (h *Handler) Render(statusCode int, w http.ResponseWriter, v interface{}) {
+func (h *Router) Render(statusCode int, w http.ResponseWriter, v interface{}) {
 	buf := &bytes.Buffer{}
 	enc := json.NewEncoder(buf)
 	enc.SetEscapeHTML(true)

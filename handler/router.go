@@ -8,29 +8,29 @@ import (
 	applcux "github.com/lftzzzzfeng/fasms/usecases/applicant"
 )
 
-type HandlerConfig struct {
+type RouterConfig struct {
 	Logger  *zap.Logger
 	ApplcUx *applcux.Applicant
 }
 
-type Handler struct {
+type Router struct {
 	logger  *zap.Logger
 	applcUx *applcux.Applicant
 }
 
-func New(hdlConf *HandlerConfig) *Handler {
-	return &Handler{
-		logger:  hdlConf.Logger,
-		applcUx: hdlConf.ApplcUx,
+func New(routerConf *RouterConfig) *Router {
+	return &Router{
+		logger:  routerConf.Logger,
+		applcUx: routerConf.ApplcUx,
 	}
 }
 
-func (h *Handler) Router() (chi.Router, error) {
+func (h *Router) Router() chi.Router {
 	router := chi.NewRouter()
 
 	router.Use(middleware.AllowContentType("application/json"))
 
 	router.Get("/api/applicants", h.applicantHandler)
 
-	return router, nil
+	return router
 }

@@ -63,16 +63,15 @@ func main() {
 	applcRepo := applcrepo.New(app.execer)
 	applcUx := applcux.New(applcRepo)
 
-	handlerConf := &handler.HandlerConfig{
+	routerConf := &handler.RouterConfig{
 		ApplcUx: applcUx,
 	}
-	hdler := handler.New(handlerConf)
-	router := must(hdler.Router())
+	router := handler.New(routerConf)
 
 	app.httpServer = must(httpserver.New(&httpserver.ServerParams{
 		Config:  app.config.Server,
 		Logger:  app.logger,
-		Handler: router,
+		Handler: router.Router(),
 	}))
 
 	ctx, cancel := context.WithCancel(context.Background())
