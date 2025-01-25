@@ -3,12 +3,31 @@ package handler
 import (
 	"net/http"
 
+	"github.com/lftzzzzfeng/fasms/handler/request"
 	"github.com/lftzzzzfeng/fasms/handler/response"
 	"go.uber.org/zap"
 )
 
-func (r *Router) getAllApplicantHandler(res http.ResponseWriter, req *http.Request) {
+func (r *Router) createApplicantHandler(res http.ResponseWriter, req *http.Request) {
+	// ctx := req.Context()
 
+	applicant := &request.CreateApplicant{}
+
+	if err := r.readJSON(req.Body, applicant); err != nil {
+		r.Render(http.StatusBadRequest, res, nil)
+		return
+	}
+
+	// check existing applicant, family
+
+	// create familly
+
+	// create applicant
+
+	r.Render(http.StatusOK, res, applicant)
+}
+
+func (r *Router) getAllApplicantHandler(res http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 
 	applicants, err := r.applcUx.GetAllApplicants(ctx)
