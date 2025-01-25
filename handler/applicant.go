@@ -2,6 +2,6 @@ package handler
 
 import "net/http"
 
-func (h *Router) applicantHandler(w http.ResponseWriter, r *http.Request) {
-
+func (r *Router) getAllApplicantHandler(res http.ResponseWriter, req *http.Request) {
+	r.Render(http.StatusOK, res, `{"key":"value}`)
 }

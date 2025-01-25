@@ -30,7 +30,7 @@ func (h *Router) Router() chi.Router {
 
 	router.Use(middleware.AllowContentType("application/json"))
 
-	router.Get("/api/applicants", h.applicantHandler)
+	router.Get("/v1/api/applicants", h.getAllApplicantHandler)
 
 	return router
 }
