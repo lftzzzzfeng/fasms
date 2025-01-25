@@ -28,7 +28,6 @@ func New(dbExecer db.Execer) Applicant {
 
 // Create inserts an entry into the database table.
 func (r *ApplicantRepo) Create(ctx context.Context, data *domain.Applicant) error {
-
 	sql := `
 		INSERT INTO fasms.applicants
 			(id, name, sex, ic, family_id, relationship, employment_status)
@@ -46,7 +45,6 @@ func (r *ApplicantRepo) Create(ctx context.Context, data *domain.Applicant) erro
 
 // GetAll return all applicants
 func (r *ApplicantRepo) GetAll(ctx context.Context, offset, limit int) ([]*domain.Applicant, error) {
-
 	query := `
 		SELECT t.id,
 			name,
