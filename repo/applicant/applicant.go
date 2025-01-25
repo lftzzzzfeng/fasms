@@ -47,7 +47,7 @@ func (r *ApplicantRepo) Create(ctx context.Context, data *domain.Applicant) erro
 func (r *ApplicantRepo) GetAll(ctx context.Context) ([]*domain.Applicant, error) {
 
 	query := `
-		SELECT id, 
+		SELECT t.id,
 			name,
 			sex,
 			ic,

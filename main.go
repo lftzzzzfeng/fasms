@@ -64,6 +64,7 @@ func main() {
 	applcUx := applcux.New(applcRepo)
 
 	routerConf := &handler.RouterConfig{
+		Logger:  app.logger,
 		ApplcUx: applcUx,
 	}
 	router := handler.New(routerConf)
