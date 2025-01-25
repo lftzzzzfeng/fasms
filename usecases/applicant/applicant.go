@@ -17,9 +17,11 @@ type Applicant struct {
 	FamilyRepo    familyrepo.Family
 }
 
-func New(repo applcrepo.Applicant) *Applicant {
+func New(applcRepo applcrepo.Applicant, familyRepo familyrepo.Family,
+) *Applicant {
 	return &Applicant{
-		ApplicantRepo: repo,
+		ApplicantRepo: applcRepo,
+		FamilyRepo:    familyRepo,
 	}
 }
 
@@ -30,7 +32,7 @@ func (a *Applicant) CreateApplicant(ctx context.Context, req *request.CreateAppl
 		return errors.Wrap(err, "applicantusecases: get applicant by ic failed.")
 	}
 
-	if applicant.IC != "" {
+	if applicant != nil {
 		return errors.Wrap(err, "applicantusecases: existing applicant.")
 	}
 

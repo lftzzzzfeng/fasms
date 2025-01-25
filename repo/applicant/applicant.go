@@ -91,7 +91,7 @@ func (r *ApplicantRepo) GetByIC(ctx context.Context, ic string) (*domain.Applica
 			relationship,
 			employment_status
 		FROM fasms.applicants
-		WHERE ic = :ic
+		WHERE ic = $1
 		LIMIT 1
 	`
 
@@ -99,7 +99,7 @@ func (r *ApplicantRepo) GetByIC(ctx context.Context, ic string) (*domain.Applica
 	err := r.db.QueryRowxContext(ctx, query, ic).Scan(applicant)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.Wrapf(err, "applicantrepo: applicant not found")
+			return nil, nil
 		}
 
 		return nil, errors.Wrapf(err, "applicantrepo: get applicant failed")

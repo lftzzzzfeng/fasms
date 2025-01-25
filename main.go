@@ -17,6 +17,7 @@ import (
 	pgdb "github.com/lftzzzzfeng/fasms/db/pg"
 	"github.com/lftzzzzfeng/fasms/handler"
 	applcrepo "github.com/lftzzzzfeng/fasms/repo/applicant"
+	familyrepo "github.com/lftzzzzfeng/fasms/repo/family"
 	httpserver "github.com/lftzzzzfeng/fasms/server"
 	applcux "github.com/lftzzzzfeng/fasms/usecases/applicant"
 )
@@ -59,9 +60,12 @@ func main() {
 
 	app.execer = must(pgdb.NewExec(app.defaultPGDB, app.logger))
 
-	// applicant
+	// repo
 	applcRepo := applcrepo.New(app.execer)
-	applcUx := applcux.New(applcRepo)
+	familyRepo := familyrepo.New(app.execer)
+
+	// usecases
+	applcUx := applcux.New(applcRepo, familyRepo)
 
 	routerConf := &handler.RouterConfig{
 		Logger:  app.logger,

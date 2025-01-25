@@ -33,7 +33,7 @@ func (r *FamilyRepo) Create(ctx context.Context, data *domain.Family) error {
 
 	sql := `
 		INSERT INTO fasms.families (id, address)
-		VALUES (:id, :name)
+		VALUES (:id, :address)
 	`
 
 	_, err := r.db.NamedExecContext(ctx, sql, data)
