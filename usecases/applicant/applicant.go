@@ -98,7 +98,7 @@ func (a *Applicant) CreateApplicant(ctx context.Context, req *request.CreateAppl
 func (a *Applicant) GetAllApplicants(ctx context.Context, offset, limit int) ([]*response.GetAllApplicants, error) {
 	applicants, err := a.ApplicantRepo.GetAll(ctx, offset, limit)
 	if err != nil {
-		return nil, errors.Wrap(err, "applicationusecases: get all applicants failed.")
+		return nil, errors.Wrap(err, "applicantusecases: get all applicants failed.")
 	}
 
 	applicantsRes := []*response.GetAllApplicants{}
@@ -137,7 +137,7 @@ func (a *Applicant) GetAllApplicants(ctx context.Context, offset, limit int) ([]
 func (a *Applicant) GetApplicantByIC(ctx context.Context, ic string) (*domain.Applicant, error) {
 	applicant, err := a.ApplicantRepo.GetByIC(ctx, ic)
 	if err != nil {
-		return nil, errors.Wrap(err, "applicationusecases: get applicant failed.")
+		return nil, errors.Wrap(err, "applicantusecases: get applicant failed.")
 	}
 
 	return applicant, nil

@@ -18,8 +18,10 @@ import (
 	"github.com/lftzzzzfeng/fasms/handler"
 	applcrepo "github.com/lftzzzzfeng/fasms/repo/applicant"
 	familyrepo "github.com/lftzzzzfeng/fasms/repo/family"
+	schemerepo "github.com/lftzzzzfeng/fasms/repo/scheme"
 	httpserver "github.com/lftzzzzfeng/fasms/server"
 	applcux "github.com/lftzzzzfeng/fasms/usecases/applicant"
+	schemeux "github.com/lftzzzzfeng/fasms/usecases/scheme"
 )
 
 const (
@@ -63,13 +65,16 @@ func main() {
 	// repo
 	applcRepo := applcrepo.New(app.execer)
 	familyRepo := familyrepo.New(app.execer)
+	schemeRepo := schemerepo.New(app.execer)
 
 	// usecases
 	applcUx := applcux.New(applcRepo, familyRepo)
+	schemeUx := schemeux.New(schemeRepo)
 
 	routerConf := &handler.RouterConfig{
-		Logger:  app.logger,
-		ApplcUx: applcUx,
+		Logger:   app.logger,
+		ApplcUx:  applcUx,
+		SchemeUx: schemeUx,
 	}
 	router := handler.New(routerConf)
 

@@ -6,22 +6,26 @@ import (
 	"go.uber.org/zap"
 
 	applcux "github.com/lftzzzzfeng/fasms/usecases/applicant"
+	schemeux "github.com/lftzzzzfeng/fasms/usecases/scheme"
 )
 
 type RouterConfig struct {
-	Logger  *zap.Logger
-	ApplcUx *applcux.Applicant
+	Logger   *zap.Logger
+	ApplcUx  *applcux.Applicant
+	SchemeUx *schemeux.Scheme
 }
 
 type Router struct {
-	logger  *zap.Logger
-	applcUx *applcux.Applicant
+	logger   *zap.Logger
+	applcUx  *applcux.Applicant
+	schemeUx *schemeux.Scheme
 }
 
 func New(routerConf *RouterConfig) *Router {
 	return &Router{
-		logger:  routerConf.Logger,
-		applcUx: routerConf.ApplcUx,
+		logger:   routerConf.Logger,
+		applcUx:  routerConf.ApplcUx,
+		schemeUx: routerConf.SchemeUx,
 	}
 }
 
@@ -33,7 +37,7 @@ func (h *Router) Router() chi.Router {
 	router.Post("/v1/api/applicants", h.createApplicantHandler)
 	router.Get("/v1/api/applicants", h.getAllApplicantHandler)
 
-	router.Get("/v1/api/schemes", h.getAllApplicantHandler)
+	router.Get("/v1/api/schemes", h.getAllSchemesHandler)
 
 	return router
 }
