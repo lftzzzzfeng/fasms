@@ -17,7 +17,7 @@ func (r *Router) createApplicantHandler(res http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	_, err := r.applcUx.CreateApplicant(ctx, applicant)
+	err := r.applcUx.CreateApplicant(ctx, applicant)
 	if err != nil {
 		r.logger.Error("error create applicant", zap.Error(err))
 
@@ -28,7 +28,7 @@ func (r *Router) createApplicantHandler(res http.ResponseWriter, req *http.Reque
 		return
 	}
 
-	r.Render(http.StatusOK, res, applicant)
+	r.Render(http.StatusCreated, res, applicant)
 }
 
 func (r *Router) getAllApplicantHandler(res http.ResponseWriter, req *http.Request) {

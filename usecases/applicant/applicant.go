@@ -23,22 +23,21 @@ func New(repo applcrepo.Applicant) *Applicant {
 	}
 }
 
-func (a *Applicant) CreateApplicant(ctx context.Context, req *request.CreateApplicant) (
-	*domain.Applicant, error) {
+func (a *Applicant) CreateApplicant(ctx context.Context, req *request.CreateApplicant) error {
 	// check existing applicant
 	applicant, err := a.GetApplicantByIC(ctx, req.Applicant.IC)
 	if err != nil {
-		return nil, errors.Wrap(err, "applicantusecases: get applicant by ic failed.")
+		return errors.Wrap(err, "applicantusecases: get applicant by ic failed.")
 	}
 
 	if applicant.IC != "" {
-		return nil, errors.Wrap(err, "applicantusecases: existing applicant.")
+		return errors.Wrap(err, "applicantusecases: existing applicant.")
 	}
 
 	// create familly
 	familyID, err := uuid.NewRandom()
 	if err != nil {
-		return nil, errors.Wrap(err, "applicantusecases: generate uuid failed.")
+		return errors.Wrap(err, "applicantusecases: generate uuid failed.")
 	}
 
 	family := &domain.Family{
@@ -48,14 +47,14 @@ func (a *Applicant) CreateApplicant(ctx context.Context, req *request.CreateAppl
 
 	err = a.FamilyRepo.Create(ctx, family)
 	if err != nil {
-		return nil, errors.Wrap(err, "applicantusecases: create family failed.")
+		return errors.Wrap(err, "applicantusecases: create family failed.")
 	}
 
-	// create applicant
+	// create applicants
 	for i := 0; i < 1+len(req.Household); i++ {
 		applicantID, err := uuid.NewRandom()
 		if err != nil {
-			return nil, errors.Wrap(err, "applicantusecases: generate uuid failed.")
+			return errors.Wrap(err, "applicantusecases: generate uuid failed.")
 		}
 
 		newApplicant := &domain.Applicant{
@@ -82,11 +81,11 @@ func (a *Applicant) CreateApplicant(ctx context.Context, req *request.CreateAppl
 		}
 
 		if err := a.ApplicantRepo.Create(ctx, newApplicant); err != nil {
-			return nil, errors.Wrap(err, "applicantusecases: create applicant failed.")
+			return errors.Wrap(err, "applicantusecases: create applicant failed.")
 		}
 	}
 
-	return nil, nil
+	return nil
 }
 
 func (a *Applicant) GetAllApplicants(ctx context.Context) ([]*domain.Applicant, error) {
