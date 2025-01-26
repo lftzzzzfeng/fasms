@@ -7,16 +7,19 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/lftzzzzfeng/fasms/handler/response"
+	applcrepo "github.com/lftzzzzfeng/fasms/repo/applicant"
 	schemerepo "github.com/lftzzzzfeng/fasms/repo/scheme"
 )
 
 type Scheme struct {
-	SchemeRepo schemerepo.Scheme
+	ApplicantRepo applcrepo.Applicant
+	SchemeRepo    schemerepo.Scheme
 }
 
-func New(schemeRepo schemerepo.Scheme) *Scheme {
+func New(applcRepo applcrepo.Applicant, schemeRepo schemerepo.Scheme) *Scheme {
 	return &Scheme{
-		SchemeRepo: schemeRepo,
+		ApplicantRepo: applcRepo,
+		SchemeRepo:    schemeRepo,
 	}
 }
 
@@ -43,5 +46,14 @@ func (s *Scheme) GetAllSchemes(ctx context.Context) ([]*response.GetAllSchemes, 
 
 func (s *Scheme) GetEligibleSchemesByApplicant(ctx context.Context, applcID uuid.UUID) (
 	[]*response.GetAllSchemes, error) {
+	applicant, err := s.ApplicantRepo.GetByID(ctx, applcID)
+	if err != nil {
+		return nil, errors.Wrap(err, "schemeusecases: get applicant failed.")
+	}
+
+	if applicant == nil {
+		return nil, errors.New("invalid applicant id")
+	}
+
 	return nil, nil
 }

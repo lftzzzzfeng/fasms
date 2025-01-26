@@ -40,10 +40,8 @@ func (r *Router) getEligibleSchemesByApplicant(res http.ResponseWriter, req *htt
 
 	schemes, err := r.schemeUx.GetEligibleSchemesByApplicant(ctx, applcID)
 	if err != nil {
-		r.logger.Error("error get all schemes", zap.Error(err))
-
 		r.Render(http.StatusOK, res, &response.Error{
-			Msg: "error get all schemes",
+			Msg: err.Error(),
 		})
 
 		return

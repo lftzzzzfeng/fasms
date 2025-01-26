@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/google/uuid"
 	"github.com/lftzzzzfeng/fasms/db"
 	"github.com/lftzzzzfeng/fasms/domain"
 	"github.com/pkg/errors"
@@ -13,6 +14,7 @@ type Applicant interface {
 	Create(ctx context.Context, applicant *domain.Applicant) error
 	GetAll(ctx context.Context, offset, limit int) ([]*domain.Applicant, error)
 	GetByIC(ctx context.Context, ic string) (*domain.Applicant, error)
+	GetByID(ctx context.Context, id uuid.UUID) (*domain.Applicant, error)
 }
 
 type ApplicantRepo struct {
@@ -98,6 +100,32 @@ func (r *ApplicantRepo) GetByIC(ctx context.Context, ic string) (*domain.Applica
 
 	var applicant *domain.Applicant
 	err := r.db.QueryRowxContext(ctx, query, ic).Scan(applicant)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, errors.Wrapf(err, "applicantrepo: get applicant failed")
+	}
+
+	return applicant, nil
+}
+
+func (r *ApplicantRepo) GetByID(ctx context.Context, id uuid.UUID) (*domain.Applicant, error) {
+	query := `
+		SELECT id,
+			name,
+			sex,
+			ic,
+			relationship,
+			employment_status
+		FROM fasms.applicants
+		WHERE id = $1
+		LIMIT 1
+	`
+
+	var applicant *domain.Applicant
+	err := r.db.QueryRowxContext(ctx, query, id).Scan(applicant)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil

@@ -72,7 +72,7 @@ func main() {
 
 	// usecases
 	applcUx := applcux.New(applcRepo, familyRepo)
-	schemeUx := schemeux.New(schemeRepo)
+	schemeUx := schemeux.New(applcRepo, schemeRepo)
 	appUx := appux.New(appRepo)
 
 	routerConf := &handler.RouterConfig{
