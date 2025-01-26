@@ -11,6 +11,8 @@ import (
 
 type Scheme interface {
 	GetAll(ctx context.Context) ([]*domain.SchemeInfo, error)
+	GetEligibleSchemesByCritieria(ctx context.Context, criStr string) (
+		[]*domain.Scheme, error)
 }
 
 type SchemeRepo struct {
@@ -45,10 +47,10 @@ func (r *SchemeRepo) GetAll(ctx context.Context) ([]*domain.SchemeInfo, error) {
 	rows, err := r.db.QueryxContext(ctx, query)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.Wrap(err, "schemerepo: applicant not found from db.")
+			return nil, errors.Wrap(err, "schemerepo: scheme not found from db.")
 		}
 
-		return nil, errors.Wrap(err, "applicantrepo: get applicant from db failed.")
+		return nil, errors.Wrap(err, "schemerepo: get scheme from db failed.")
 	}
 
 	var schemeInfoArr []*domain.SchemeInfo
@@ -56,11 +58,47 @@ func (r *SchemeRepo) GetAll(ctx context.Context) ([]*domain.SchemeInfo, error) {
 		var schemeInfo domain.SchemeInfo
 
 		if err = rows.StructScan(&schemeInfo); err != nil {
-			return nil, errors.Wrap(err, "applicantrepo: scan applicant data failed")
+			return nil, errors.Wrap(err, "schemerepo: scan scheme data failed")
 		}
 
 		schemeInfoArr = append(schemeInfoArr, &schemeInfo)
 	}
 
 	return schemeInfoArr, nil
+}
+
+func (r *SchemeRepo) GetEligibleSchemesByCritieria(ctx context.Context,
+	criStr string) ([]*domain.Scheme, error) {
+	query := `
+		SELECT t.id,
+			t.name,
+			t.description
+		FROM fasms.schemes t
+		LEFT JOIN fasms.scheme_criterion_mapping scm ON scm.scheme_id = t.id
+		LEFT JOIN fasms.criteria c ON c.id = scm.criterion_id
+		GROUP BY t.id
+		HAVING string_agg(c.id::text,'|') = $1
+	`
+
+	rows, err := r.db.QueryxContext(ctx, query, criStr)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, errors.Wrap(err, "schemerepo: scheme not found from db.")
+		}
+
+		return nil, errors.Wrap(err, "schemerepo: get scheme from db failed.")
+	}
+
+	var schemes []*domain.Scheme
+	for rows.Next() {
+		var scheme domain.Scheme
+
+		if err = rows.StructScan(&scheme); err != nil {
+			return nil, errors.Wrap(err, "schemerepo: scan scheme data failed")
+		}
+
+		schemes = append(schemes, &scheme)
+	}
+
+	return schemes, nil
 }

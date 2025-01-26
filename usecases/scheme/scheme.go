@@ -73,7 +73,7 @@ func (s *Scheme) GetAllSchemes(ctx context.Context) ([]*response.GetAllSchemes, 
 }
 
 func (s *Scheme) GetEligibleSchemesByApplicant(ctx context.Context, applcID uuid.UUID) (
-	[]*response.GetAllSchemes, error) {
+	[]*response.GetEligibleScheme, error) {
 	applicant, err := s.ApplicantRepo.GetByID(ctx, applcID)
 	if err != nil {
 		return nil, errors.Wrap(err, "schemeusecases: get applicant failed.")
@@ -83,9 +83,27 @@ func (s *Scheme) GetEligibleSchemesByApplicant(ctx context.Context, applcID uuid
 		return nil, errors.New("invalid applicant id")
 	}
 
-	if applicant.EmploymentStatus == "" {
+	// get all criteria
+	// if applicant.EmploymentStatus == "" {
 
+	// }
+
+	// get scheme from applicant criteria
+	schemes, err := s.SchemeRepo.GetEligibleSchemesByCritieria(ctx, "ccfde3cb-9fb4-40cf-8bb5-41b20eded403|8bf66ffe-ee9d-49a2-b8d7-352443bcb755")
+	if err != nil {
+		return nil, errors.Wrap(err, "schemeusecases: get eligible schemes failed.")
 	}
 
-	return nil, nil
+	res := []*response.GetEligibleScheme{}
+	for _, entry := range schemes {
+		scheme := response.GetEligibleScheme{
+			ID:          entry.ID,
+			Name:        entry.Name,
+			Description: entry.Description,
+		}
+
+		res = append(res, &scheme)
+	}
+
+	return res, nil
 }

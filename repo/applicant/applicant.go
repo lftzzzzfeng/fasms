@@ -98,8 +98,8 @@ func (r *ApplicantRepo) GetByIC(ctx context.Context, ic string) (*domain.Applica
 		LIMIT 1
 	`
 
-	var applicant *domain.Applicant
-	err := r.db.QueryRowxContext(ctx, query, ic).Scan(applicant)
+	var applicant domain.Applicant
+	err := r.db.QueryRowxContext(ctx, query, ic).StructScan(&applicant)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -108,7 +108,7 @@ func (r *ApplicantRepo) GetByIC(ctx context.Context, ic string) (*domain.Applica
 		return nil, errors.Wrapf(err, "applicantrepo: get applicant failed")
 	}
 
-	return applicant, nil
+	return &applicant, nil
 }
 
 func (r *ApplicantRepo) GetByID(ctx context.Context, id uuid.UUID) (*domain.Applicant, error) {
@@ -124,8 +124,8 @@ func (r *ApplicantRepo) GetByID(ctx context.Context, id uuid.UUID) (*domain.Appl
 		LIMIT 1
 	`
 
-	var applicant *domain.Applicant
-	err := r.db.QueryRowxContext(ctx, query, id).Scan(applicant)
+	var applicant domain.Applicant
+	err := r.db.QueryRowxContext(ctx, query, id).StructScan(&applicant)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -134,5 +134,5 @@ func (r *ApplicantRepo) GetByID(ctx context.Context, id uuid.UUID) (*domain.Appl
 		return nil, errors.Wrapf(err, "applicantrepo: get applicant failed")
 	}
 
-	return applicant, nil
+	return &applicant, nil
 }
