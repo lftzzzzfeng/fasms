@@ -31,12 +31,40 @@ func (s *Scheme) GetAllSchemes(ctx context.Context) ([]*response.GetAllSchemes, 
 
 	schemesRes := []*response.GetAllSchemes{}
 
-	schemesMap := map[uuid.UUID]*response.GetAllSchemes{}
 	if len(schemes) > 0 {
+		schemesMap := map[uuid.UUID]*response.GetAllSchemes{}
+		criteriaMap := map[string]*response.Criterion{}
+		benefitMap := map[string]*response.Benefit{}
+
 		for _, scheme := range schemes {
+			criMapKey := scheme.SchemeID.String() + scheme.CriID.String()
+			benfMapKey := scheme.SchemeID.String() + scheme.BnftID.String()
+
 			if _, ok := schemesMap[scheme.SchemeID]; !ok {
-				schemesMap[scheme.SchemeID] = &response.GetAllSchemes{}
+				schemesMap[scheme.SchemeID] = &response.GetAllSchemes{
+					ID:          scheme.SchemeID,
+					Name:        scheme.Name,
+					Description: scheme.Description,
+				}
 				schemesRes = append(schemesRes, schemesMap[scheme.SchemeID])
+			}
+
+			if _, ok := criteriaMap[criMapKey]; !ok {
+				criteriaMap[criMapKey] = &response.Criterion{
+					ID:     scheme.CriID,
+					Name:   scheme.Criterion,
+					Detail: scheme.CriDetail,
+				}
+				schemesMap[scheme.SchemeID].Criteria = append(schemesMap[scheme.SchemeID].Criteria, criteriaMap[criMapKey])
+			}
+
+			if _, ok := benefitMap[benfMapKey]; !ok {
+				benefitMap[benfMapKey] = &response.Benefit{
+					ID:     scheme.BnftID,
+					Name:   scheme.Benefit,
+					Detail: scheme.BenefitDetail,
+				}
+				schemesMap[scheme.SchemeID].Benefits = append(schemesMap[scheme.SchemeID].Benefits, benefitMap[benfMapKey])
 			}
 		}
 	}
@@ -53,6 +81,10 @@ func (s *Scheme) GetEligibleSchemesByApplicant(ctx context.Context, applcID uuid
 
 	if applicant == nil {
 		return nil, errors.New("invalid applicant id")
+	}
+
+	if applicant.EmploymentStatus == "" {
+
 	}
 
 	return nil, nil

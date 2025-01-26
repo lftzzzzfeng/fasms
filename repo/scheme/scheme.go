@@ -29,15 +29,17 @@ func (r *SchemeRepo) GetAll(ctx context.Context) ([]*domain.SchemeInfo, error) {
 		SELECT t.id AS scheme_id,
 			t.name,
 			t.description,
+			c.id AS c_id,
 			c.name AS criterion,
-			c.detail as c_detail,
+			c.detail AS c_detail,
+			b.id AS b_id,
 			b.name AS benefit,
 			b.description AS b_detail
 		FROM fasms.schemes t
-		JOIN fasms.scheme_criterion_mapping scm ON scm.scheme_id = t.id
-		JOIN fasms.criteria c ON c.id = scm.criterion_id
-		JOIN fasms.scheme_benefit_mapping sbm ON sbm.scheme_id = t.id
-		JOIN fasms.benefits b ON b.id = sbm.benefit_id
+		LEFT JOIN fasms.scheme_criterion_mapping scm ON scm.scheme_id = t.id
+		LEFT JOIN fasms.criteria c ON c.id = scm.criterion_id
+		LEFT JOIN fasms.scheme_benefit_mapping sbm ON sbm.scheme_id = t.id
+		LEFT JOIN fasms.benefits b ON b.id = sbm.benefit_id
 	`
 
 	rows, err := r.db.QueryxContext(ctx, query)
