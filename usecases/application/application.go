@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/lftzzzzfeng/fasms/domain"
 	"github.com/lftzzzzfeng/fasms/handler/request"
+	"github.com/lftzzzzfeng/fasms/handler/response"
 	apprepo "github.com/lftzzzzfeng/fasms/repo/application"
 	"github.com/pkg/errors"
 )
@@ -49,4 +50,26 @@ func (a *Application) CreateApplication(ctx context.Context, req *request.Create
 	}
 
 	return nil
+}
+
+func (a *Application) GetAllApplications(ctx context.Context, offset,
+	limit int) ([]*response.GetAllApplications, error) {
+	applications, err := a.AppRepo.GetAll(ctx, offset, limit)
+	if err != nil {
+		return nil, errors.Wrap(err, "applicationusecases: get all app failed.")
+	}
+
+	applicationRes := []*response.GetAllApplications{}
+
+	for _, app := range applications {
+		app := &response.GetAllApplications{
+			ID:        app.ID,
+			Applicant: app.ApplcName,
+			Scheme:    app.SchemeName,
+			AppDate:   app.AppDate,
+		}
+		applicationRes = append(applicationRes, app)
+	}
+
+	return applicationRes, nil
 }

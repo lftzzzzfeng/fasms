@@ -48,7 +48,8 @@ func (a *ApplicantionRepo) GetAll(ctx context.Context, offset, limit int) (
 	query := `
 		SELECT t.id,
 			applc.name AS applc_name,
-			s.name AS scheme_name
+			s.name AS scheme_name,
+			t.created_at AS app_date
 		FROM fasms.applications t
 		JOIN fasms.applicants applc ON applc.id = t.applicant_id
 		JOIN fasms.schemes s ON s.id = t.scheme_id
