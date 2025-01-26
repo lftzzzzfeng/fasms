@@ -40,3 +40,8 @@ func (s *Scheme) GetAllSchemes(ctx context.Context) ([]*response.GetAllSchemes, 
 
 	return schemesRes, nil
 }
+
+func (s *Scheme) GetEligibleSchemesByApplicant(ctx context.Context, applcID uuid.UUID) (
+	[]*response.GetAllSchemes, error) {
+	return nil, nil
+}

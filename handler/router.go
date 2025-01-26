@@ -42,6 +42,7 @@ func (h *Router) Router() chi.Router {
 	router.Get("/v1/api/applicants", h.getAllApplicantHandler)
 
 	router.Get("/v1/api/schemes", h.getAllSchemesHandler)
+	router.Get("/v1/api/schemes/eligible", h.getEligibleSchemesByApplicant)
 
 	router.Post("/v1/api/applications", h.createApplicationHandler)
 	router.Get("/v1/api/applications", h.getAllApplicationsHandler)
