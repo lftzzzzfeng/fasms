@@ -17,10 +17,12 @@ import (
 	pgdb "github.com/lftzzzzfeng/fasms/db/pg"
 	"github.com/lftzzzzfeng/fasms/handler"
 	applcrepo "github.com/lftzzzzfeng/fasms/repo/applicant"
+	apprepo "github.com/lftzzzzfeng/fasms/repo/application"
 	familyrepo "github.com/lftzzzzfeng/fasms/repo/family"
 	schemerepo "github.com/lftzzzzfeng/fasms/repo/scheme"
 	httpserver "github.com/lftzzzzfeng/fasms/server"
 	applcux "github.com/lftzzzzfeng/fasms/usecases/applicant"
+	appux "github.com/lftzzzzfeng/fasms/usecases/application"
 	schemeux "github.com/lftzzzzfeng/fasms/usecases/scheme"
 )
 
@@ -66,15 +68,18 @@ func main() {
 	applcRepo := applcrepo.New(app.execer)
 	familyRepo := familyrepo.New(app.execer)
 	schemeRepo := schemerepo.New(app.execer)
+	appRepo := apprepo.New(app.execer)
 
 	// usecases
 	applcUx := applcux.New(applcRepo, familyRepo)
 	schemeUx := schemeux.New(schemeRepo)
+	appUx := appux.New(appRepo)
 
 	routerConf := &handler.RouterConfig{
 		Logger:   app.logger,
 		ApplcUx:  applcUx,
 		SchemeUx: schemeUx,
+		AppUx:    appUx,
 	}
 	router := handler.New(routerConf)
 

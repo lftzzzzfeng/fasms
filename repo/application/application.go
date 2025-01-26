@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/google/uuid"
 	"github.com/lftzzzzfeng/fasms/db"
 	"github.com/lftzzzzfeng/fasms/domain"
 	"github.com/pkg/errors"
@@ -12,6 +13,7 @@ import (
 type Application interface {
 	Create(ctx context.Context, application *domain.Application) error
 	GetAll(ctx context.Context, offset, limit int) ([]*domain.ApplicationInfo, error)
+	GetByApplcIDAndSchemeID(ctx context.Context, applcID, schemeID uuid.UUID) (*domain.Application, error)
 }
 
 type ApplicantionRepo struct {
@@ -75,4 +77,28 @@ func (a *ApplicantionRepo) GetAll(ctx context.Context, offset, limit int) (
 	}
 
 	return applications, nil
+}
+
+func (a *ApplicantionRepo) GetByApplcIDAndSchemeID(ctx context.Context,
+	applcID, schemeID uuid.UUID) (*domain.Application, error) {
+	query := `
+		SELECT id,
+			applicant_id,
+			scheme_id
+		FROM fasms.applications
+		WHERE applicant_id = $1 AND scheme_id = $2
+		LIMIT 1
+	`
+
+	var applicantion *domain.Application
+	err := a.db.QueryRowxContext(ctx, query, applcID, schemeID).Scan(applicantion)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, nil
+		}
+
+		return nil, errors.Wrapf(err, "applicationrepo: get app failed")
+	}
+
+	return applicantion, nil
 }
