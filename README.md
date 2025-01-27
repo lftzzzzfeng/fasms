@@ -17,7 +17,7 @@ brew install sqitch --with-postgres-support
 
 ## Configure
 sqitch config --user user.name ${Your_Full_Name_on_GitLab}
-sqitch config --user user.email ${your-email-address@dtone.com}
+sqitch config --user user.email ${your-email-address@.com}
 
 ## Other repo
 git clone https://github.com/lftzzzzfeng/fasms-db.git
