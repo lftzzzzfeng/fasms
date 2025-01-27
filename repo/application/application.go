@@ -91,8 +91,8 @@ func (a *ApplicantionRepo) GetByApplcIDAndSchemeID(ctx context.Context,
 		LIMIT 1
 	`
 
-	var applicantion *domain.Application
-	err := a.db.QueryRowxContext(ctx, query, applcID, schemeID).Scan(applicantion)
+	var applicantion domain.Application
+	err := a.db.QueryRowxContext(ctx, query, applcID, schemeID).StructScan(&applicantion)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -101,5 +101,5 @@ func (a *ApplicantionRepo) GetByApplcIDAndSchemeID(ctx context.Context,
 		return nil, errors.Wrapf(err, "applicationrepo: get app failed")
 	}
 
-	return applicantion, nil
+	return &applicantion, nil
 }

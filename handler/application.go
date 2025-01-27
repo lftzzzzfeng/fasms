@@ -22,7 +22,7 @@ func (r *Router) createApplicationHandler(res http.ResponseWriter, req *http.Req
 		r.logger.Error("error create application", zap.Error(err))
 
 		r.Render(http.StatusOK, res, &response.Error{
-			Msg: "error create application",
+			Msg: err.Error(),
 		})
 
 		return
@@ -39,7 +39,7 @@ func (r *Router) getAllApplicationsHandler(res http.ResponseWriter, req *http.Re
 		r.logger.Error("error get all applications", zap.Error(err))
 
 		r.Render(http.StatusOK, res, &response.Error{
-			Msg: "error get all applications",
+			Msg: err.Error(),
 		})
 
 		return

@@ -2,24 +2,31 @@ package scheme
 
 import (
 	"context"
+	"slices"
+	"strconv"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 
 	"github.com/lftzzzzfeng/fasms/handler/response"
 	applcrepo "github.com/lftzzzzfeng/fasms/repo/applicant"
+	crirepo "github.com/lftzzzzfeng/fasms/repo/criterion"
 	schemerepo "github.com/lftzzzzfeng/fasms/repo/scheme"
 )
 
 type Scheme struct {
 	ApplicantRepo applcrepo.Applicant
 	SchemeRepo    schemerepo.Scheme
+	CriteriRepo   crirepo.Criterion
 }
 
-func New(applcRepo applcrepo.Applicant, schemeRepo schemerepo.Scheme) *Scheme {
+func New(applcRepo applcrepo.Applicant, schemeRepo schemerepo.Scheme,
+	criRepo crirepo.Criterion) *Scheme {
 	return &Scheme{
 		ApplicantRepo: applcRepo,
 		SchemeRepo:    schemeRepo,
+		CriteriRepo:   criRepo,
 	}
 }
 
@@ -74,22 +81,60 @@ func (s *Scheme) GetAllSchemes(ctx context.Context) ([]*response.GetAllSchemes, 
 
 func (s *Scheme) GetEligibleSchemesByApplicant(ctx context.Context, applcID uuid.UUID) (
 	[]*response.GetEligibleScheme, error) {
-	applicant, err := s.ApplicantRepo.GetByID(ctx, applcID)
+	applicants, err := s.ApplicantRepo.GetByID(ctx, applcID)
 	if err != nil {
 		return nil, errors.Wrap(err, "schemeusecases: get applicant failed.")
 	}
 
-	if applicant == nil {
+	if len(applicants) == 0 {
 		return nil, errors.New("invalid applicant id")
 	}
 
-	// get all criteria
-	// if applicant.EmploymentStatus == "" {
+	criterionDetails := []string{}
+	criterionIDStrArr := []string{}
 
-	// }
+	// calculate criteria from household applicants
+	for _, applc := range applicants {
+		// employment status
+		if !slices.Contains(criterionDetails, applc.EmploymentStatus) {
+			criterionDetails = append(criterionDetails, applc.EmploymentStatus)
+		}
+
+		// citizenship
+		firstLetter := string(applc.IC[0])
+		if firstLetter == "S" || firstLetter == "T" {
+			if !slices.Contains(criterionDetails, crirepo.CRITERION_CITIZEN) {
+				criterionDetails = append(criterionDetails, crirepo.CRITERION_CITIZEN)
+			}
+		}
+
+		// age for primary shcool
+		ageLetter := string(applc.IC[1:3])
+		age, err := strconv.Atoi(ageLetter)
+		if err != nil {
+			return nil, errors.Wrap(err, "schemeusecases: get applicant age failed.")
+		}
+		if age >= 6 && age < 12 {
+			if !slices.Contains(criterionDetails, crirepo.CRITERION_PRIMARY_SCHOOL) {
+				criterionDetails = append(criterionDetails, crirepo.CRITERION_PRIMARY_SCHOOL)
+			}
+		}
+	}
+
+	// get criteria ids
+	criteriaIDs, err := s.CriteriRepo.GetIdsByDetails(ctx, criterionDetails)
+	if err != nil {
+		return nil, errors.Wrap(err, "schemeusecases: get criteria ids failed.")
+	}
+
+	// format criteria ids as string
+	for _, id := range criteriaIDs {
+		criterionIDStrArr = append(criterionIDStrArr, id.String())
+	}
 
 	// get scheme from applicant criteria
-	schemes, err := s.SchemeRepo.GetEligibleSchemesByCritieria(ctx, "ccfde3cb-9fb4-40cf-8bb5-41b20eded403|8bf66ffe-ee9d-49a2-b8d7-352443bcb755")
+	criteriaStr := strings.Join(criterionIDStrArr, "|")
+	schemes, err := s.SchemeRepo.GetEligibleSchemesByCritieria(ctx, criteriaStr)
 	if err != nil {
 		return nil, errors.Wrap(err, "schemeusecases: get eligible schemes failed.")
 	}

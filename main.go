@@ -18,6 +18,7 @@ import (
 	"github.com/lftzzzzfeng/fasms/handler"
 	applcrepo "github.com/lftzzzzfeng/fasms/repo/applicant"
 	apprepo "github.com/lftzzzzfeng/fasms/repo/application"
+	crirepo "github.com/lftzzzzfeng/fasms/repo/criterion"
 	familyrepo "github.com/lftzzzzfeng/fasms/repo/family"
 	schemerepo "github.com/lftzzzzfeng/fasms/repo/scheme"
 	httpserver "github.com/lftzzzzfeng/fasms/server"
@@ -69,10 +70,11 @@ func main() {
 	familyRepo := familyrepo.New(app.execer)
 	schemeRepo := schemerepo.New(app.execer)
 	appRepo := apprepo.New(app.execer)
+	criRepo := crirepo.New(app.execer)
 
 	// usecases
 	applcUx := applcux.New(applcRepo, familyRepo)
-	schemeUx := schemeux.New(applcRepo, schemeRepo)
+	schemeUx := schemeux.New(applcRepo, schemeRepo, criRepo)
 	appUx := appux.New(appRepo)
 
 	routerConf := &handler.RouterConfig{

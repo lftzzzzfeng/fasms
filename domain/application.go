@@ -12,5 +12,5 @@ type ApplicationInfo struct {
 	ID         uuid.UUID `db:"id"`
 	ApplcName  string    `db:"applc_name"`
 	SchemeName string    `db:"scheme_name"`
-	AppDate    string    `json:"app_date"`
+	AppDate    string    `db:"app_date"`
 }

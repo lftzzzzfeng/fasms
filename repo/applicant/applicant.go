@@ -14,7 +14,7 @@ type Applicant interface {
 	Create(ctx context.Context, applicant *domain.Applicant) error
 	GetAll(ctx context.Context, offset, limit int) ([]*domain.Applicant, error)
 	GetByIC(ctx context.Context, ic string) (*domain.Applicant, error)
-	GetByID(ctx context.Context, id uuid.UUID) (*domain.Applicant, error)
+	GetByID(ctx context.Context, id uuid.UUID) ([]*domain.Applicant, error)
 }
 
 type ApplicantRepo struct {
@@ -111,28 +111,42 @@ func (r *ApplicantRepo) GetByIC(ctx context.Context, ic string) (*domain.Applica
 	return &applicant, nil
 }
 
-func (r *ApplicantRepo) GetByID(ctx context.Context, id uuid.UUID) (*domain.Applicant, error) {
+func (r *ApplicantRepo) GetByID(ctx context.Context, id uuid.UUID) ([]*domain.Applicant, error) {
 	query := `
-		SELECT id,
+		WITH applc AS (SELECT family_id 
+						FROM fasms.applicants
+						WHERE id::text = $1)
+		SELECT t.id,
 			name,
 			sex,
 			ic,
+			f.id AS family_id,
 			relationship,
 			employment_status
-		FROM fasms.applicants
-		WHERE id = $1
-		LIMIT 1
+		FROM fasms.applicants t
+		JOIN fasms.families f ON f.id = t.family_id
+		WHERE family_id = (SELECT family_id FROM applc)
 	`
 
-	var applicant domain.Applicant
-	err := r.db.QueryRowxContext(ctx, query, id).StructScan(&applicant)
+	rows, err := r.db.QueryxContext(ctx, query, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil
+			return nil, errors.Wrap(err, "applicantrepo: applicant not found from db.")
 		}
 
-		return nil, errors.Wrapf(err, "applicantrepo: get applicant failed")
+		return nil, errors.Wrap(err, "applicantrepo: get applicant from db failed.")
 	}
 
-	return &applicant, nil
+	var applicants []*domain.Applicant
+	for rows.Next() {
+		var applicant domain.Applicant
+
+		if err = rows.StructScan(&applicant); err != nil {
+			return nil, errors.Wrap(err, "applicantrepo: scan applicant data failed")
+		}
+
+		applicants = append(applicants, &applicant)
+	}
+
+	return applicants, nil
 }

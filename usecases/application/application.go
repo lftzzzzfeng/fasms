@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/lftzzzzfeng/fasms/domain"
@@ -28,10 +29,12 @@ func (a *Application) CreateApplication(ctx context.Context, req *request.Create
 		return errors.Wrap(err, "applicationusecases: get app by applc_id and scheme_id failed.")
 	}
 
+	fmt.Println(1)
 	if application != nil {
-		return errors.Wrap(err, "applicationusecases: existing application.")
+		return errors.New("applicationusecases: existing application.")
 	}
 
+	fmt.Println(2)
 	// create application
 	appID, err := uuid.NewRandom()
 	if err != nil {
