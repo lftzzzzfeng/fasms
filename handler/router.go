@@ -34,6 +34,7 @@ func New(routerConf *RouterConfig) *Router {
 }
 
 func (h *Router) Router() chi.Router {
+	// todo: use validator to validate request data
 	router := chi.NewRouter()
 
 	router.Use(middleware.AllowContentType("application/json"))
