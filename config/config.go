@@ -18,7 +18,7 @@ type Config struct {
 }
 
 func Load(env string) (*Config, error) {
-	viper.AddConfigPath(fmt.Sprintf("./conf"))
+	viper.AddConfigPath(fmt.Sprintf("./deployment/conf"))
 	viper.SetConfigName(env)
 	viper.SetConfigType("yaml")
 	replacer := strings.NewReplacer(".", "_")

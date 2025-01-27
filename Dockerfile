@@ -23,7 +23,7 @@ RUN apk update \
 WORKDIR ${APP_DIR}
 
 COPY --from=builder ${APP_DIR}/${APP_NAME} .
-COPY conf conf
+COPY deployment deployment
 
 RUN chown -R fasms:fasms $APP_DIR
 

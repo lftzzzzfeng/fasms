@@ -1,5 +1,5 @@
 database:
-  host: localhost
+  host: host.docker.internal
   user: fengliu
   password:
   port: 5432
