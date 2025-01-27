@@ -13,7 +13,6 @@ brew tap sqitchers/sqitch
 brew install sqitch --with-postgres-support
 
 ### Other Platforms
-
 * See [official distributions](https://sqitch.org/download/).
 
 ## Configure
@@ -23,7 +22,7 @@ sqitch config --user user.email ${your-email-address@dtone.com}
 ## Other repo
 git clone https://github.com/lftzzzzfeng/fasms-db.git
 
-## Install db
+## Install fasms db
 sqitch deploy
 ```
 
