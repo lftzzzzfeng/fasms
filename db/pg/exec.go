@@ -1,6 +1,3 @@
-/**
- * @author Jose Nidhin
- */
 package pg
 
 import (

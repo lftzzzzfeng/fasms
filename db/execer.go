@@ -1,6 +1,3 @@
-/**
- * @author Jose Nidhin
- */
 package db
 
 import (
