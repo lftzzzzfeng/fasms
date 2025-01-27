@@ -103,6 +103,41 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - name
+                - employment_status
+                - sex
+                - ic
+              properties:
+                name:
+                  type: string
+                employment_status:
+                  type: string
+                sex:
+                  type: string
+                ic:
+                  type: string
+                household:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - employment_status
+                      - sex
+                      - ic
+                      - relation
+                    properties:
+                      name:
+                        type: string
+                      employment_status:
+                        type: string
+                      sex:
+                        type: string
+                      ic:
+                        type: string
+                      relation:
+                        type: string
               example:
                 name: Ben
                 employment_status: unemployed
@@ -260,6 +295,14 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - applicant_id
+                - scheme_id
+              properties:
+                applicant_id:
+                  type: string
+                scheme_id:
+                  type: string
               example:
                 applicant_id: decce08e-4774-43d6-acd9-0f3a4f24b4dc
                 scheme_id: 9d68aa74-eedf-4d68-bfeb-18a6c23cc821
