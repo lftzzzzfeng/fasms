@@ -15,7 +15,6 @@ type Applicant struct {
 	IC               string `json:"ic"`
 	Sex              string `json:"sex"`
 	EmploymentStatus string `json:"employment_status"`
-	DOB              string `json:"dob"`
 }
 
 type Relationship struct {
