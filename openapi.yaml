@@ -258,6 +258,7 @@ paths:
       parameters:
         - name: applicant_id
           in: query
+          required: true
           schema:
             type: string
           example: decce08e-4774-43d6-acd9-0f3a4f24b4dc
