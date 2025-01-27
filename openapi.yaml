@@ -1,0 +1,316 @@
+openapi: 3.0.0
+info:
+  title: Fasms
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+paths:
+  /v1/api/applicants:
+    get:
+      tags:
+        - default
+      summary: applicants
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Mon, 27 Jan 2025 06:45:35 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '1360'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: decce08e-4774-43d6-acd9-0f3a4f24b4dc
+                  name: James
+                  sex: male
+                  ic: S9912123
+                  employment_status: unemployed
+                  dob: ''
+                  household:
+                    - id: b27f8602-da7c-429d-9e3b-974a54b0a5bb
+                      name: Gwen
+                      sex: female
+                      ic: S12932221
+                      employment_status: unemployed
+                      dob: ''
+                      relation: daughter
+                    - id: 64248173-84d7-4eee-b83f-abacae6bbcd1
+                      name: Jayden
+                      sex: male
+                      ic: S282939121
+                      employment_status: unemployed
+                      dob: ''
+                      relation: son
+                - id: b5f3ecea-348a-43fb-a1e8-a3178ce17aa4
+                  name: Test1
+                  sex: male
+                  ic: S99001112
+                  employment_status: unemployed
+                  dob: ''
+                  household:
+                    - id: b46214e4-f97d-4370-bb7d-1f901a7502bf
+                      name: Test2
+                      sex: female
+                      ic: S88990011
+                      employment_status: unemployed
+                      dob: ''
+                      relation: daughter
+                    - id: 921bf52d-7377-4d47-bc24-043c2df306c5
+                      name: Test3
+                      sex: male
+                      ic: S09123211
+                      employment_status: unemployed
+                      dob: ''
+                      relation: son
+                - id: 06cc1be2-14cc-40e9-8606-4d96f98d4dee
+                  name: Test5
+                  sex: male
+                  ic: S990009
+                  employment_status: unemployed
+                  dob: ''
+                  household:
+                    - id: ba55caed-b55d-4a21-8d74-33e7b0b3793f
+                      name: Test6
+                      sex: female
+                      ic: S880011
+                      employment_status: unemployed
+                      dob: ''
+                      relation: daughter
+                    - id: 561e0b60-0aaf-4d05-aba4-bfd1bc056408
+                      name: Test7
+                      sex: male
+                      ic: S09123983
+                      employment_status: unemployed
+                      dob: ''
+                      relation: son
+    post:
+      tags:
+        - default
+      summary: applicants
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Ben
+                employment_status: unemployed
+                sex: male
+                ic: S8191201T
+                household:
+                  - name: Lily
+                    employment_status: unemployed
+                    ic: S9912931A
+                    sex: female
+                    relation: daughter
+                  - name: James
+                    employment_status: unemployed
+                    ic: S9712398G
+                    sex: male
+                    relation: son
+      responses:
+        '201':
+          description: Created
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Mon, 27 Jan 2025 06:45:51 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '291'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                name: Test5
+                ic: S990009
+                sex: male
+                employment_status: unemployed
+                household:
+                  - name: Test6
+                    ic: S880011
+                    sex: female
+                    employment_status: unemployed
+                    relation: daughter
+                  - name: Test7
+                    ic: S09123983
+                    sex: male
+                    employment_status: unemployed
+                    relation: son
+  /v1/api/schemes:
+    get:
+      tags:
+        - default
+      summary: schemes
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Mon, 27 Jan 2025 06:46:24 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '935'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 9d68aa74-eedf-4d68-bfeb-18a6c23cc821
+                  name: scheme1
+                  descritpion: fasms
+                  criteria:
+                    - id: ccfde3cb-9fb4-40cf-8bb5-41b20eded403
+                      name: residence_status
+                      detail: citizen
+                    - id: 8bf66ffe-ee9d-49a2-b8d7-352443bcb755
+                      name: employ_status
+                      detail: unemployed
+                  benefits:
+                    - id: c5f11cf1-6bfe-4c45-81d9-22d5fb18deac
+                      name: voucher
+                      detail: 500 dollar
+                - id: 69dd76c5-9101-4e1e-8026-712ffde83d2c
+                  name: scheme2
+                  descritpion: fasms family
+                  criteria:
+                    - id: ccfde3cb-9fb4-40cf-8bb5-41b20eded403
+                      name: residence_status
+                      detail: citizen
+                    - id: 749b4ee4-8b8d-4979-a10e-3ffe94306984
+                      name: has_child
+                      detail: primary
+                    - id: 8bf66ffe-ee9d-49a2-b8d7-352443bcb755
+                      name: employ_status
+                      detail: unemployed
+                  benefits:
+                    - id: 33d7ea84-601c-4139-81da-4e21379f6d8f
+                      name: school meal
+                      detail: 3 meals
+                    - id: c5f11cf1-6bfe-4c45-81d9-22d5fb18deac
+                      name: voucher
+                      detail: 500 dollar
+  /v1/api/schemes/eligible:
+    get:
+      tags:
+        - default
+      summary: eligible schemes by applicant
+      parameters:
+        - name: applicant_id
+          in: query
+          schema:
+            type: string
+          example: decce08e-4774-43d6-acd9-0f3a4f24b4dc
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Mon, 27 Jan 2025 06:46:28 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '87'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 9d68aa74-eedf-4d68-bfeb-18a6c23cc821
+                  name: scheme1
+                  description: fasms
+  /v1/api/applications:
+    post:
+      tags:
+        - default
+      summary: applications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                applicant_id: decce08e-4774-43d6-acd9-0f3a4f24b4dc
+                scheme_id: 9d68aa74-eedf-4d68-bfeb-18a6c23cc821
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Mon, 27 Jan 2025 06:46:31 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '53'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                msg: 'applicationusecases: existing application.'
+    get:
+      tags:
+        - default
+      summary: applications
+      responses:
+        '200':
+          description: OK
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Date:
+              schema:
+                type: string
+                example: Mon, 27 Jan 2025 06:46:35 GMT
+            Content-Length:
+              schema:
+                type: integer
+                example: '141'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: c0afa5b4-edbc-4617-a6bd-6b619e02f786
+                  applicant: James
+                  scheme: scheme1
+                  application_date: '2025-01-27T14:10:03.109792+08:00'

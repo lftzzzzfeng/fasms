@@ -1,6 +1,6 @@
 module github.com/lftzzzzfeng/fasms
 
-go 1.23.5
+go 1.23.2
 
 require (
 	github.com/go-chi/chi/v5 v5.2.0
