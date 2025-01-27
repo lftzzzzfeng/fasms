@@ -8,8 +8,8 @@ paths:
   /v1/api/applicants:
     get:
       tags:
-        - default
-      summary: applicants
+        - fasms
+      summary: get all applicants
       responses:
         '200':
           description: OK
@@ -96,8 +96,8 @@ paths:
                       relation: son
     post:
       tags:
-        - default
-      summary: applicants
+        - fasms
+      summary: create applicants
       requestBody:
         content:
           application/json:
@@ -193,8 +193,8 @@ paths:
   /v1/api/schemes:
     get:
       tags:
-        - default
-      summary: schemes
+        - fasms
+      summary: get all schemes
       responses:
         '200':
           description: OK
@@ -253,7 +253,7 @@ paths:
   /v1/api/schemes/eligible:
     get:
       tags:
-        - default
+        - fasms
       summary: eligible schemes by applicant
       parameters:
         - name: applicant_id
@@ -289,8 +289,8 @@ paths:
   /v1/api/applications:
     post:
       tags:
-        - default
-      summary: applications
+        - fasms
+      summary: create application
       requestBody:
         content:
           application/json:
@@ -331,8 +331,8 @@ paths:
                 msg: 'applicationusecases: existing application.'
     get:
       tags:
-        - default
-      summary: applications
+        - fasms
+      summary: get all applications
       responses:
         '200':
           description: OK
