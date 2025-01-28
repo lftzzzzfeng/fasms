@@ -16,7 +16,7 @@ brew install sqitch --with-postgres-support
 * See [official distributions](https://sqitch.org/download/).
 
 ## Configure
-sqitch config --user user.name ${Your_Full_Name_on_GitLab}
+sqitch config --user user.name ${Your_Full_Name_on_Github}
 sqitch config --user user.email ${your-email-address@.com}
 
 ## Other repo
